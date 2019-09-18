@@ -1,60 +1,96 @@
 // beats per minute of the song
-int bpm;
-int time = millis();
+double BPM = 60.0;
 
-// a class representing squares that 
-class beatSquare {
-  color c;
-  float x;
-  float y;
-  int len;
-  int wid;
-  
-  beatSquare(color colorC, float Xpos, float Ypos, int lengt, int widt) {
-     c = colorC;
-     x = Xpos;
-     y = Ypos;
-     len = lengt;
-     wid = widt;
-     
-     fill(lerpColor(255, c, ((millis()/5000)%2==0)?millis():5000-millis()));
-     rect(x, y, len, wid);
-   }
-   
-   void flashOn() {
-     fill(c);
-   }
-   
-   void flashOff() {
-     fill(255);
-   }
+// colors for the squares
+color pulseColor; 
+color tonic_color;
+color supertonic_color;
+color mediant_color; 
+color subdominant_color;
+color dominant_color;
+color submediant_color;
+color leading_tone_color;
+
+// converts the given BPM into a format we can use for lerpColor
+// 60 --> 500
+// 120 --> 250
+double convertBPM(double bpm) {
+    return (60.0/bpm) * 500.0;
 }
+
+// a class representing squares that pulse at  the BPM
+class beatSquares {
+  color c;
+  int bpm;
+  
+  // constructor
+  beatSquares(color colorC) {
+     c = colorC;
+     
+     // convert the bpm into a format we can use
+     bpm = (int) (convertBPM(BPM));
+  }
+  
+  void flash() {
+     /* determines often we will "flash" the beat, switching between white and the color
+     * taken from this thread:
+     * https://forum.processing.org/two/discussion/20861/change-between-colors-over-time */
+     fill(lerpColor(255, c, ((millis()/bpm)%2==0)?millis():bpm-millis()));
+  }
+  
+  // draw our rectangles in the appropriate areas
+  void draw_rec() {
+    
+     // Wall 1: xratio= 0.0, yratio= 0.7462963, len= 29, wid=43
+     rect(width*0, height*0.7462963, 29, 43);
+     
+     // Wall 2: xratio= 0.122395836, yratio= 0.7712963, len= 29, wid=43
+     rect(width*0.122395836, height*0.7712963, 29, 43);
+     
+     // Wall 3: xratio= 0.35364583, yratio= 0.7425926, len= 29, wid=44
+     rect(width*0.35364583, height*0.7425926, 29, 44);
+     
+     // Wall 4: xratio= 0.66041666, yratio= 0.0, len= 635, wid=651
+     rect(width*0.66041666,  height*0, 365, 651);
+  }
+}
+
+class noteSquare {
+  
+  color c;
+  
+  noteSquare(color colorC) {
+    c = colorC;
+  }
+  
+  
+}
+
+// square to declare
+beatSquares pulse; // the main beat for the song
+noteSquare tonic; // note # 1 (i.e. C for the C major scale)
+noteSquare supertonic; // note # 2
+noteSquare mediant; // note # 3
+noteSquare subdominant; // note # 4
+noteSquare dominant; // note # 5
+noteSquare submediant; // note # 6
+noteSquare leading_tone; // note # 7 
 
 void setup() {
   fullScreen();
-  background(102);
+  background(255);
+  pulseColor = color(255, 0, 0);
+  pulse = new beatSquares(pulseColor);
+  tonic = new noteSquare(0);
+  supertonic = new noteSquare(0);
+  mediant = new noteSquare(0);
+  subdominant = new noteSquare(0);
+  dominant = new noteSquare(0);
+  submediant = new noteSquare(0);
+  leading_tone = new noteSquare(0);
 }
 
 void draw() {
-  fill(255);
-  
-  int passedMillis = millis() - time;
-  if(passedMillis >= 215) {
-    time = millis();
-    fill(255, 0,0);
-  }
-  
-  color f = color(255, 0, 0);
-  
-  beatSquare s;
-  
-  s = new beatSquare(f, 500, 500, 500, 500);
-  
-  
-  //rect(50,50,50,50);
-  
-  //fill(255);
-  //ellipse(150,150,50,50);
-  //fill(255, 0,0);
-  //arc(150,150,50,50, 0, TWO_PI / 215.0 * passedMillis, PIE);
+  pulse.flash();
+  pulse.draw_rec();
 }
