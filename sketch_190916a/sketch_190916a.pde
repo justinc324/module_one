@@ -10,7 +10,23 @@ class beatSquare {
   int len;
   int wid;
   
-   beatSquare(color colorC, float Xpos, float Ypos, int lengt, int widt) {
+  beatSquare(color colorC, float Xpos, float Ypos, int lengt, int widt) {
+     c = colorC;
+     x = Xpos;
+     y = Ypos;
+     len = lengt;
+     wid = widt;
+     
+     fill(lerpColor(255, c, ((millis()/5000)%2==0)?millis():5000-millis()));
+     rect(x, y, len, wid);
+   }
+   
+   void flashOn() {
+     fill(c);
+   }
+   
+   void flashOff() {
+     fill(255);
    }
 }
 
@@ -28,10 +44,17 @@ void draw() {
     fill(255, 0,0);
   }
   
-  rect(50,50,50,50);
+  color f = color(255, 0, 0);
   
-  fill(255);
-  ellipse(150,150,50,50);
-  fill(255, 0,0);
-  arc(150,150,50,50, 0, TWO_PI / 215.0 * passedMillis, PIE);
+  beatSquare s;
+  
+  s = new beatSquare(f, 500, 500, 500, 500);
+  
+  
+  //rect(50,50,50,50);
+  
+  //fill(255);
+  //ellipse(150,150,50,50);
+  //fill(255, 0,0);
+  //arc(150,150,50,50, 0, TWO_PI / 215.0 * passedMillis, PIE);
 }
