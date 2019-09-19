@@ -5,9 +5,11 @@ import java.util.Random;
 Random rand = new Random(); 
 
 // =================GENERAL DECLARATIONS===============================
+int X_AXIS = 1;
+int Y_AXIS = 2;
 
 // important; this is the color that we'll use as the background
-color background = color(0,0,0);
+color background = color(255);
 
 // beats per minute of the song
 double BPM = 60.0;
@@ -83,6 +85,73 @@ void assignNotes() {
   }
 }
 
+// taken from processing tutorial https://processing.org/examples/lineargradient.html
+void setGradient(int x, int y, float w, float h, color c1, color c2, int axis) {
+
+  noFill();
+
+  if (axis == Y_AXIS) {  // Top to bottom gradient
+    for (int i = y; i <= y+h; i++) {
+      float inter = map(i, y, y+h, 0, 1);
+      color c = lerpColor(c1, c2, inter);
+      stroke(c);
+      line(x, i, x+w, i);
+    }
+  }  
+  else if (axis == X_AXIS) {  // Left to right gradient
+    for (int i = x; i <= x+w; i++) {
+      float inter = map(i, x, x+w, 0, 1);
+      color c = lerpColor(c1, c2, inter);
+      stroke(c);
+      line(i, y, i, y+h);
+    }
+  }
+}
+
+void createCeilingGradient() {
+  // xratio= 0.66041666, yratio= 0.0, len= 635, wid=651
+  int xpos = (int) (width*0.66041666);
+  int ypos = 0;
+  float w = 82;
+  float h = 635;
+  color c1 = assigned_colors.get(0);
+  color c2;
+  
+  for (int i = 1; i < 8; i++) {
+    
+    c2 = assigned_colors.get(i);
+    
+    setGradient(xpos, ypos, w, h, c1, c2, Y_AXIS);
+    xpos += 70;
+  }
+  
+  fill(c1);
+  stroke(c1);
+  rect(width*0.66041666, 0, 651, 71);
+}
+
+// uses
+void createNoteGradient() {
+  
+  int xpos = (int) (width*0.66041666);
+  int ypos = (int) (height*0.5824074);
+  float w = 82;
+  float h = 450;
+  color c1;
+  color c2;
+  
+  for (int i = 1; i < 7; i++) {
+    
+    // grab the colors we are going to gradient
+    c1 = assigned_colors.get(i);
+    c2 = assigned_colors.get(i+1);
+    
+    setGradient(xpos, ypos, w, h, c1, c2, X_AXIS);
+    xpos += 82;
+  }
+  
+}
+
 // randomly assigns colors (non-repeating) to assigned_notes and the rhythm
 void assignColors() {
   
@@ -131,17 +200,19 @@ class beatSquares {
   }
   
   void flash() {
-   int time = millis();
-   /* determines often we will "flash" the beat, switching between white and the color
-   * adapted from this thread:
-   * https://forum.processing.org/two/discussion/20861/change-between-colors-over-time */
-   if ((time/bpm)%2==0) {
-     fill(lerpColor(background, c, count));
-   }
-   else {
-      fill(background);
-      count = 1;
-   }
+     int time = millis();
+     stroke(c);
+     
+     /* determines often we will "flash" the beat, switching between white and the color
+     * adapted from this thread:
+     * https://forum.processing.org/two/discussion/20861/change-between-colors-over-time */
+     if ((time/bpm)%2==0) {
+       fill(lerpColor(background, c, count));
+     }
+     else {
+        fill(background);
+        count = 1;
+     }
   }
   
   // draw our rectangles in the appropriate areas
@@ -157,7 +228,13 @@ class beatSquares {
      rect(width*0.35364583, height*0.7425926, 44, 29);
      
      // Wall 4: xratio= 0.66041666, yratio= 0.0, len= 635, wid=651
-     rect(width*0.66041666,  height*0, 651, 635);
+     // rect(width*0.66041666,  height*0, 490, 635);
+  }
+  
+  // combines flash and draw_rec into one
+  void createPulse() {
+    flash();
+    draw_rec();
   }
 }
 
@@ -240,6 +317,8 @@ class noteSquare {
     
     int time = millis();
     int conv_bpm = 0;
+    
+    stroke(c);
     
     // convert bpm based on the note
     if (note == 1) {
@@ -336,6 +415,9 @@ void setup() {
                            0,0,0,0,
                            0,0,0,0,
                            width*0.5640625, height*0.85925925, 34, 49);
+   
+   createCeilingGradient();                        
+   createNoteGradient();
 }
 int count = 1;
 void draw() {
