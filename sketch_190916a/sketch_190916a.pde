@@ -419,6 +419,7 @@ void setup() {
    createCeilingGradient();                        
    createNoteGradient();
 }
+
 int count = 1;
 void draw() {
   
