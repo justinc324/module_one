@@ -9,7 +9,7 @@ int X_AXIS = 1;
 int Y_AXIS = 2;
 
 // important; this is the color that we'll use as the background
-color background = color(255);
+color background = color(0, 0, 0);
 
 // beats per minute of the song
 double BPM = 60.0;
@@ -201,7 +201,7 @@ class beatSquares {
   
   void flash() {
      int time = millis();
-     stroke(c);
+     stroke(background);
      
      /* determines often we will "flash" the beat, switching between white and the color
      * adapted from this thread:
@@ -318,7 +318,7 @@ class noteSquare {
     int time = millis();
     int conv_bpm = 0;
     
-    stroke(c);
+    stroke(background);
     
     // convert bpm based on the note
     if (note == 1) {
