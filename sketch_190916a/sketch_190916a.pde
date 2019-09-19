@@ -58,9 +58,61 @@ class beatSquares {
 class noteSquare {
   
   color c;
+  int bpm;
+  
+  float Xpos1;
+  float Ypos1;
+  int len1;
+  int wid1;
+  
+  float Xpos2;
+  float Ypos2;
+  int len2;
+  int wid2;
+  
+  float Xpos3;
+  float Ypos3;
+  int len3;
+  int wid3;
   
   noteSquare(color colorC) {
     c = colorC;
+    bpm = (int) convertBPM(BPM);
+  }
+  
+  // draws the sqaures in the given areas
+  void draw_rec() {
+    rect(Xpos1, Ypos1, len1, wid1);
+    rect(Xpos2, Ypos2, len2, wid2);
+    rect(Xpos3, Ypos3, len3, wid3);
+  }
+  
+  /* flashes a note for the specified duration
+  * 1 == whole note
+  * 2 == half
+  * 4 == quarter
+  * 8 == eigth
+  */
+  void flash(int note) {
+    
+    int conv_bpm = 1;
+    
+    // convert bpm based on the note
+    if (note == 1) {
+      conv_bpm = bpm * 4;
+    }
+    else if (note == 2) {
+      conv_bpm = bpm * 2;
+    }
+    else if (note == 4) {
+      conv_bpm = bpm;
+    }
+    else if (note == 8) {
+      conv_bpm = bpm/2;
+    }
+    
+    
+    fill(lerpColor(255, c, ((millis()/conv_bpm)%2==0)?millis():conv_bpm-millis()));
   }
   
   
@@ -91,6 +143,20 @@ void setup() {
 }
 
 void draw() {
+  
+  // set up the pulsing squares
   pulse.flash();
   pulse.draw_rec();
+  
+  // set up the tonic square
+  tonic.flash(8);
+  
+  // Wall #1: xratio= 0.06302083, yratio= 0.7972222, len= 29, wid=43
+  tonic.draw_rec(width*0.06302083, height*0.7972222, 29, 43);
+  
+  // Wall # 2: xratio= 0.17916666, yratio= 0.7972222, len= 29, wid=44
+  tonic.draw_rec(width*0.17916666, height*0.7972222, 29, 44);
+   
+  // Wall # 3: xratio= 0.3875, yratio= 0.7962963, len= 29, wid=44
+  tonic.draw_rec(width*0.3875, height*0.7962963, 29, 44);
 }
