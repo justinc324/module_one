@@ -13,7 +13,7 @@ color background = color(0,0,0);
 double BPM = 60.0;
 
 // max/min BPM (dont want it too flashy)
-int MAX_BPM = 80;
+int MAX_BPM = 60;
 int MIN_BPM = 40;
 
 // general colors 
@@ -136,10 +136,10 @@ class beatSquares {
    * adapted from this thread:
    * https://forum.processing.org/two/discussion/20861/change-between-colors-over-time */
    if ((time/bpm)%2==0) {
-     fill(lerpColor(255, c, count));
+     fill(lerpColor(background, c, count));
    }
    else {
-      fill(255);
+      fill(background);
       count = 1;
    }
   }
@@ -255,12 +255,12 @@ class noteSquare {
       conv_bpm = bpm/2;
     }
     
-    // if it's empty, leave it white
+    // if it's empty, leave it white (or whatever color is the background)
     if (conv_bpm == 0) {
-      fill(255);
+      fill(background);
     }
     else {
-      fill(lerpColor(255, c, ((time/conv_bpm)%2==0)?time:conv_bpm-time));
+      fill(lerpColor(background, c, ((time/conv_bpm)%2==0)?time:conv_bpm-time));
     }
 }
   
@@ -297,7 +297,7 @@ class noteSquare {
 
 void setup() {
   fullScreen();
-  background(255);
+  background(background);
   
   /* RANDOM FUN!!
   * Let's do fun things like assigning colors, BPM, and note
